@@ -23,7 +23,7 @@ echo "-----> CACHE = '$CACHE' ..."
 
 BASH=$(which bash)
 WGET=$(which wget)
-CONDA_HOME="$BUILD/.conda"
+CONDA_HOME="$BUILD/conda"
 CONDA_BIN="$CONDA_HOME/bin"
 
 if [ ! -e "$BUILD/conda_runtime.txt" ]; then
@@ -60,6 +60,10 @@ echo "-----> Installing PyHamcrest ..."
 $CONDA_BIN/pip install jupyterlab #&> /dev/null
 $CONDA_BIN/jupyter serverextension enable --py jupyterlab --user
 
+##### This is a total hack until I figure out how to place things in a buildpack
+sed -i 's|#!.*|#!./conda/bin/python|' $CONDA_BIN/jupyter
+#####
+
 if [ -e "$BUILD/requirements.txt" ]; then
     echo "-----> Installing additional requirements using conda..."
 	while read p; do 
@@ -76,7 +80,5 @@ if [ -e "$BUILD/additional_notebook_config.py" ]
 then
 	echo "-----> Additional IPython configuration file detected"
 fi
-mkdir -p $BUILD/.profile.d
-echo 'export PATH=$PATH:$CONDA_BIN:$HOME/target/release' > $BUILD/.profile.d/jupyter.sh
 
 echo "-----> Finished compile step"
