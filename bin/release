@@ -14,14 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-echo "-----> Enter release script"
 if [ -e "$1/additional_notebook_config.py" ]
 then
     with_config="--config=./additional_notebook_config.py"
 fi
 
-echo "
 default_process_types:
   web: ./.conda/bin/jupyter lab --no-browser --no-mathjax --ip=* --port \$PORT $with_config
-"
-echo "-----> Exit release script"
