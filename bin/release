@@ -19,5 +19,7 @@ then
     with_config="--config=./additional_notebook_config.py"
 fi
 
+echo "
 default_process_types:
   web: ./.conda/bin/jupyter lab --no-browser --no-mathjax --ip=* --port \$PORT $with_config
+"

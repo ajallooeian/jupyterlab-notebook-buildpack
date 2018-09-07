@@ -23,7 +23,7 @@ echo "-----> CACHE = '$CACHE' ..."
 
 BASH=$(which bash)
 WGET=$(which wget)
-CONDA_HOME="$1/.conda"
+CONDA_HOME="$BUILD/.conda"
 CONDA_BIN="$CONDA_HOME/bin"
 
 if [ ! -e "$BUILD/conda_runtime.txt" ]; then
