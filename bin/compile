@@ -15,18 +15,21 @@
 # limitations under the License.
 #
 echo "-----> Starting compile step..."
-ROOT=$1
+BUILD=$1
 CACHE=$2
+
+echo "-----> BUILD = '$BUILD' ..."
+echo "-----> CACHE = '$CACHE' ..."
 
 BASH=$(which bash)
 WGET=$(which wget)
 CONDA_HOME="$1/.conda"
 CONDA_BIN="$CONDA_HOME/bin"
 
-if [ ! -e "$ROOT/conda_runtime.txt" ]; then
+if [ ! -e "$BUILD/conda_runtime.txt" ]; then
 	MINICONDA_FILE="Miniconda-latest-Linux-x86_64.sh"
 else
-	MINICONDA_FILE=$(cat "$ROOT/conda_runtime.txt")
+	MINICONDA_FILE=$(cat "$BUILD/conda_runtime.txt")
 fi
 MINICONDA_URI="http://repo.continuum.io/miniconda/$MINICONDA_FILE"
 MINICONDA_CACHE="$CACHE/$MINICONDA_FILE"
@@ -35,7 +38,7 @@ echo "-----> Preparing Python Environment..."
 if [ ! -e $MINICONDA_CACHE ] ; then
 	echo "-----> Downloading Miniconda..."
 	if [ ! -d $CACHE ]; then mkdir $CACHE; fi
-	$WGET -O $MINICONDA_CACHE $MINICONDA_URI
+	$WGET -q -O $MINICONDA_CACHE $MINICONDA_URI
 	chmod +x $MINICONDA_CACHE
 fi
 if [ -e $CONDA_HOME ]; then rm -rf $CONDA_HOME; fi
@@ -49,24 +52,27 @@ echo "-----> Installing Conveniences..."
 $CONDA_BIN/conda install --yes --quiet -c anaconda psycopg2
 #$CONDA_BIN/conda install --yes --quiet matplotlib plotly seaborn pandas #&> /dev/null
 
-echo "-----> Installing JupyterLab..."
+echo "-----> Update pip ..."
+$CONDA_BIN/pip install --upgrade pip
+
+echo "-----> Installing PyHamcrest and JupyterLab..."
+$CONDA_BIN/pip install pyhamcrest
 $CONDA_BIN/pip install jupyterlab #&> /dev/null
 $CONDA_BIN/jupyter serverextension enable --py jupyterlab --user
 
-if [ -e "$ROOT/requirements.txt" ]; then
+if [ -e "$BUILD/requirements.txt" ]; then
     echo "-----> Installing additional requirements using conda..."
 	while read p; do 
 	    $CONDA_BIN/conda install --yes --quiet $p #&> /dev/null
-	done <"$ROOT/requirements.txt"
+	done <"$BUILD/requirements.txt"
     echo "-----> Installing additional requirements using pip..."
-	$CONDA_BIN/pip install -r "$ROOT/requirements.txt"
-
+	$CONDA_BIN/pip install -r "$BUILD/requirements.txt"
 fi
 #
 echo "-----> Changing hardcoded paths..."
-grep -rlI $ROOT . | xargs sed -i.bak "s|$ROOT|.|g"
+grep -rlI $BUILD . | xargs sed -i.bak "s|$BUILD|.|g"
 #
-if [ -e "$ROOT/additional_notebook_config.py" ]
+if [ -e "$BUILD/additional_notebook_config.py" ]
 then
 	echo "-----> Additional IPython configuration file detected"
 fi
