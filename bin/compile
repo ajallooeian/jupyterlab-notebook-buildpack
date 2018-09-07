@@ -76,6 +76,7 @@ if [ -e "$BUILD/additional_notebook_config.py" ]
 then
 	echo "-----> Additional IPython configuration file detected"
 fi
-echo "----> Python = $(which python) ..."
+mkdir -p $BUILD/.profile.d
+echo 'export PATH=$PATH:$CONDA_BIN:$HOME/target/release' > $BUILD/.profile.d/jupyter.sh
 
 echo "-----> Finished compile step"
