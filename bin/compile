@@ -47,7 +47,7 @@ $CONDA_BIN/conda install --yes --quiet pip ipython-notebook #&> /dev/null
 
 echo "-----> Installing Conveniences..."
 $CONDA_BIN/conda install --yes --quiet -c anaconda psycopg2
-$CONDA_BIN/conda install --yes --quiet matplotlib plotly seaborn pandas #&> /dev/null
+#$CONDA_BIN/conda install --yes --quiet matplotlib plotly seaborn pandas #&> /dev/null
 
 echo "-----> Installing JupyterLab..."
 $CONDA_BIN/pip install jupyterlab #&> /dev/null
