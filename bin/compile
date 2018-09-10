@@ -55,8 +55,9 @@ $CONDA_BIN/pip install pyhamcrest
 echo "-----> Update pip ..."
 $CONDA_BIN/pip install --upgrade pip
 
-echo "-----> Installing PyHamcrest ..."
+echo "-----> Installing jupyterlab, ipython-sql, psycopg2, pprint ..."
 $CONDA_BIN/pip install jupyterlab #&> /dev/null
+$CONDA_BIN/pip install ipython-sql psycopg2 pprint
 $CONDA_BIN/jupyter serverextension enable --py jupyterlab --user
 
 if [ -e "$BUILD/requirements.txt" ]; then
@@ -77,7 +78,11 @@ then
 fi
 
 PROFILE=$BUILD/.profile
-touch -p $PROFILE
+touch $PROFILE
 echo "export PATH=$HOME/app/conda/bin:\$PATH" > $PROFILE
+
+mkdir $BUILD/.jupyter
+PASSWORD='sha1:ea36cf81e22b:931ee2f3acc963996242ce5f4872bd3076c74d4d'   # hash for 'p@ssword2018'
+echo "c.NotebookApp.password = '$PASSWORD'" > $BUILD/.jupyter/jupyter_notebook_config.py
 
 echo "-----> Finished compile step"
