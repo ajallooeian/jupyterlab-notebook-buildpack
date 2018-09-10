@@ -23,7 +23,7 @@ echo "-----> CACHE = '$CACHE' ..."
 echo "-----> HOME = '$HOME' ..."
 
 WGET=$(which wget)
-CONDA_HOME="$HOME/app/conda"
+CONDA_HOME="$BUILD/conda"
 CONDA_BIN="$CONDA_HOME/bin"
 
 if [ ! -e "$BUILD/conda_runtime.txt" ]; then
@@ -69,7 +69,7 @@ if [ -e "$BUILD/requirements.txt" ]; then
 fi
 #
 echo "-----> Changing hardcoded paths..."
-#grep -rlI $BUILD . | xargs sed -i.bak "s|$BUILD|./app|g"
+grep -rlI "$BUILD" $BUILD | xargs sed -i.bak "s|$BUILD|$HOME/app|g"
 #
 if [ -e "$BUILD/additional_notebook_config.py" ]
 then
