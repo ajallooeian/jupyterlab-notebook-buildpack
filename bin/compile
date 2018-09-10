@@ -76,7 +76,8 @@ then
 	echo "-----> Additional IPython configuration file detected"
 fi
 
-mkdir -p $BUILD/.profile.d
-echo 'export PATH=$PATH:$CONDA_BIN:$HOME/target/release' > $BUILD/.profile.d/env.sh
+PROFILE=$BUILD/.profile
+touch -p $PROFILE
+echo "export PATH=$HOME/app/conda/bin:\$PATH" > $PROFILE
 
 echo "-----> Finished compile step"
