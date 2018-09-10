@@ -20,11 +20,10 @@ CACHE=$2
 
 echo "-----> BUILD = '$BUILD' ..."
 echo "-----> CACHE = '$CACHE' ..."
+echo "-----> HOME = '$HOME' ..."
 
-BASH=$(which bash)
 WGET=$(which wget)
-#CONDA_HOME="$BUILD/conda"
-CONDA_HOME="$HOME/conda"
+CONDA_HOME="$BUILD/conda"
 CONDA_BIN="$CONDA_HOME/bin"
 
 if [ ! -e "$BUILD/conda_runtime.txt" ]; then
@@ -51,7 +50,6 @@ $CONDA_BIN/conda install --yes --quiet pip ipython-notebook #&> /dev/null
 
 echo "-----> Installing Conveniences..."
 $CONDA_BIN/conda install --yes --quiet -c anaconda psycopg2
-#$CONDA_BIN/conda install --yes --quiet matplotlib plotly seaborn pandas #&> /dev/null
 $CONDA_BIN/pip install pyhamcrest
 
 echo "-----> Update pip ..."
@@ -71,13 +69,14 @@ if [ -e "$BUILD/requirements.txt" ]; then
 fi
 #
 echo "-----> Changing hardcoded paths..."
-#grep -rlI $BUILD . | xargs sed -i.bak "s|$BUILD|.|g"
+grep -rlI $BUILD . | xargs sed -i.bak "s|$BUILD|./|g"
 #
 if [ -e "$BUILD/additional_notebook_config.py" ]
 then
 	echo "-----> Additional IPython configuration file detected"
 fi
 
-echo 'export PATH=$PATH:$CONDA_BIN:$HOME/target/release' > /etc/profile.d/jupyter.sh
+mkdir -p $BUILD/.profile.d
+echo 'export PATH=$PATH:$CONDA_BIN:$HOME/target/release' > $BUILD/.profile.d/env.sh
 
 echo "-----> Finished compile step"

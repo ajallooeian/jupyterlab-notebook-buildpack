@@ -21,6 +21,7 @@ fi
 
 echo "
 default_process_types:
-  web: jupyter lab --no-browser --no-mathjax --ip=* --port \$PORT $with_config
+  web: python -m SimpleHTTPServer  \$PORT
 "
 #  web: ./conda/bin/jupyter lab --no-browser --no-mathjax --ip=* --port \$PORT $with_config
+#  web: jupyter lab --no-browser --no-mathjax --ip=* --port \$PORT $with_config
