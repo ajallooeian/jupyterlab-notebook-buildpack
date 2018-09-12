@@ -26,7 +26,7 @@ WGET=$(which wget)
 CONDA_HOME="$BUILD/conda"
 CONDA_BIN="$CONDA_HOME/bin"
 
-if [ ! -e "$BUILD/conda_runtime.txt" ]; then
+if [ ! -r "$BUILD/conda_runtime.txt" ]; then
 	MINICONDA_FILE="Miniconda-latest-Linux-x86_64.sh"
 else
 	MINICONDA_FILE=$(cat "$BUILD/conda_runtime.txt")
@@ -35,7 +35,7 @@ MINICONDA_URI="http://repo.continuum.io/miniconda/$MINICONDA_FILE"
 MINICONDA_CACHE="$CACHE/$MINICONDA_FILE"
 
 echo "-----> Preparing Python Environment..."
-if [ ! -e $MINICONDA_CACHE ] ; then
+if [ ! -r $MINICONDA_CACHE ] ; then
 	echo "-----> Downloading Miniconda..."
 	if [ ! -d $CACHE ]; then mkdir $CACHE; fi
 	$WGET -q -O $MINICONDA_CACHE $MINICONDA_URI
@@ -56,11 +56,10 @@ echo "-----> Update pip ..."
 $CONDA_BIN/pip install --upgrade pip
 
 echo "-----> Installing jupyterlab, ipython-sql, psycopg2, pprint ..."
-$CONDA_BIN/pip install jupyterlab #&> /dev/null
-$CONDA_BIN/pip install ipython-sql psycopg2 pprint
+$CONDA_BIN/pip install jupyterlab ipython-sql psycopg2 pprint #&> /dev/null
 $CONDA_BIN/jupyter serverextension enable --py jupyterlab --user
 
-if [ -e "$BUILD/requirements.txt" ]; then
+if [ -r "$BUILD/requirements.txt" ]; then
     echo "-----> Installing additional requirements using conda..."
 	while read p; do 
 	    $CONDA_BIN/conda install --yes --quiet $p #&> /dev/null
@@ -69,10 +68,10 @@ if [ -e "$BUILD/requirements.txt" ]; then
 	$CONDA_BIN/pip install -r "$BUILD/requirements.txt"
 fi
 #
-echo "-----> Changing hardcoded paths..."
+echo "-----> Fixing embedded paths..."
 grep -rlI "$BUILD" $BUILD | xargs sed -i.bak "s|$BUILD|$HOME/app|g"
 #
-if [ -e "$BUILD/additional_notebook_config.py" ]
+if [ -r "$BUILD/additional_notebook_config.py" ]
 then
 	echo "-----> Additional IPython configuration file detected"
 fi
@@ -81,8 +80,8 @@ PROFILE=$BUILD/.profile
 touch $PROFILE
 echo "export PATH=$HOME/app/conda/bin:\$PATH" > $PROFILE
 
-mkdir $BUILD/.jupyter
-PASSWORD='sha1:ea36cf81e22b:931ee2f3acc963996242ce5f4872bd3076c74d4d'   # hash for 'p@ssword2018'
-echo "c.NotebookApp.password = '$PASSWORD'" > $BUILD/.jupyter/jupyter_notebook_config.py
+#mkdir $BUILD/.jupyter
+#PASSWORD='sha1:ea36cf81e22b:931ee2f3acc963996242ce5f4872bd3076c74d4d'   # hash for 'p@ssword2018'
+#echo "c.NotebookApp.password = '$PASSWORD'" > $BUILD/.jupyter/jupyter_notebook_config.py
 
 echo "-----> Finished compile step"

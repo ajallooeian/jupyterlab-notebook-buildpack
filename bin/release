@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-if [ -e "$1/additional_notebook_config.py" ]
+if [ -r "$1/additional_notebook_config.py" ]
 then
     with_config="--config=./additional_notebook_config.py"
 fi
@@ -23,5 +23,5 @@ echo "
 default_process_types:
   web: jupyter lab --no-browser --no-mathjax --ip=* --port \$PORT $with_config
 "
-#  web: ./app/conda/bin/jupyter lab --no-browser --no-mathjax --ip=* --port \$PORT $with_config
+
 #  web: python -m SimpleHTTPServer  \$PORT
